@@ -353,7 +353,15 @@ const getSafeRoute = () => {
   </Popup>
 </Marker>
     {userLocation && (
-  <Marker position={userLocation}>
+  <Marker
+    position={userLocation}
+    icon={L.divIcon({
+      className: "user-location-marker",
+      html: "📍",
+      iconSize: [35, 35],
+      iconAnchor: [17, 35]
+    })}
+  >
     <Popup>
       📍 Your Device Location
     </Popup>
