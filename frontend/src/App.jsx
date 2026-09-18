@@ -15,11 +15,12 @@ L.Icon.Default.mergeOptions({
 import { useEffect, useState } from "react";
 import {
   MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  Circle,
-  useMap
+TileLayer,
+Marker,
+Popup,
+Circle,
+CircleMarker,
+useMap
 } from "react-leaflet";
 
 function MapResize() {
@@ -353,19 +354,19 @@ const getSafeRoute = () => {
   </Popup>
 </Marker>
     {userLocation && (
-  <Marker
-    position={userLocation}
-    icon={L.divIcon({
-      className: "user-location-marker",
-      html: "📍",
-      iconSize: [35, 35],
-      iconAnchor: [17, 35]
-    })}
+  <CircleMarker
+    center={userLocation}
+    radius={10}
+    pathOptions={{
+      color: "red",
+      fillColor: "red",
+      fillOpacity: 1
+    }}
   >
     <Popup>
       📍 Your Device Location
     </Popup>
-  </Marker>
+  </CircleMarker>
 )}
 {userLocation && getNearestShelter() && (
   <Marker
