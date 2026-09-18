@@ -1,18 +1,89 @@
 import "./App.css";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-delete L.Icon.Default.prototype._getIconUrl;
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow
-});
 
 import { useEffect, useState } from "react";
+const cycloneIcon = L.divIcon({
+  className: "",
+  html: `
+    <div style="
+      width: 38px;
+      height: 38px;
+      background: red;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    ">
+      <span style="
+        transform: rotate(45deg);
+        color: white;
+        font-size: 20px;
+      ">🌀</span>
+    </div>
+  `,
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38]
+});
+
+const userIcon = L.divIcon({
+  className: "",
+  html: `
+    <div style="
+      width: 38px;
+      height: 38px;
+      background: #1976d2;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    ">
+      <span style="
+        transform: rotate(45deg);
+        color: white;
+        font-size: 22px;
+      ">●</span>
+    </div>
+  `,
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38]
+});
+
+const shelterIcon = L.divIcon({
+  className: "",
+  html: `
+    <div style="
+      width: 38px;
+      height: 38px;
+      background: #2e9d50;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    ">
+      <span style="
+        transform: rotate(45deg);
+        color: white;
+        font-size: 19px;
+      ">🏠</span>
+    </div>
+  `,
+  iconSize: [38, 38],
+  iconAnchor: [19, 38],
+  popupAnchor: [0, -38]
+});
 import {
   MapContainer,
 TileLayer,
@@ -346,7 +417,10 @@ const getSafeRoute = () => {
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     />
 
-    <Marker position={[cyclone.latitude, cyclone.longitude]}>
+    <Marker
+  position={[cyclone.latitude, cyclone.longitude]}
+  icon={cycloneIcon}
+>
   <Popup>
     🌀 {cyclone.name}
     <br />
@@ -354,19 +428,14 @@ const getSafeRoute = () => {
   </Popup>
 </Marker>
     {userLocation && (
-  <CircleMarker
-    center={userLocation}
-    radius={10}
-    pathOptions={{
-      color: "red",
-      fillColor: "red",
-      fillOpacity: 1
-    }}
+  <Marker
+    position={userLocation}
+    icon={userIcon}
   >
     <Popup>
       📍 Your Device Location
     </Popup>
-  </CircleMarker>
+  </Marker>
 )}
 {userLocation && getNearestShelter() && (
   <Marker
@@ -374,6 +443,7 @@ const getSafeRoute = () => {
       getNearestShelter().latitude,
       getNearestShelter().longitude
     ]}
+    icon={shelterIcon}
   >
     <Popup>
       🏠 {getNearestShelter().name}
