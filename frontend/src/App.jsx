@@ -1,5 +1,16 @@
 import "./App.css";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow
+});
 
 import { useEffect, useState } from "react";
 import {
@@ -165,9 +176,22 @@ const getSafeRoute = () => {
   window.open(url, "_blank");
 };
  const getThreatLevel = () => {
-  if (!cyclone) return "UNKNOWN";
+  if (!cyclone || !userLocation) return "UNKNOWN";
 
-  return cyclone.threatLevel;
+  const distance = calculateDistance(
+    userLocation[0],
+    userLocation[1],
+    cyclone.latitude,
+    cyclone.longitude
+  );
+
+  if (distance <= 50) {
+    return "HIGH";
+  } else if (distance <= 150) {
+    return "MEDIUM";
+  } else {
+    return "LOW";
+  }
 };
 
   const getUserLocation = () => {
@@ -236,9 +260,24 @@ const getSafeRoute = () => {
           </div>
 
           <div className="threat">
-            <span>Threat Level</span>
-            <strong>{getThreatLevel()}</strong>
-          </div>
+  <span>Threat Level</span>
+
+  <div className="threat-levels">
+    <span className={getThreatLevel() === "LOW" ? "active" : ""}>
+      LOW
+    </span>
+
+    <span className={getThreatLevel() === "MEDIUM" ? "active" : ""}>
+      MEDIUM
+    </span>
+
+    <span className={getThreatLevel() === "HIGH" ? "active" : ""}>
+      HIGH
+    </span>
+  </div>
+
+  <strong>Current: {getThreatLevel()}</strong>
+</div>
         </section>
 
         {/* Information Cards */}
